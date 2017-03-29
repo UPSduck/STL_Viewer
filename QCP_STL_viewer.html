@@ -2,224 +2,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-		<title>Easy STL Viewer</title>
-		<meta charset="utf-8">
-		<style>
-			body {
-				font-family: Monospace;
-				background-color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
+	<title>measureSTL</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="mainStyle.css">
 
-			#topBar {
-				color: #fff;
-				background: rgba(50, 250, 250, .7);
-				position:fixed;
-				top: 0;
-				width: 100%;
-				height: auto;
-				text-align: left;
-				z-index: 100;
-				display:block;
-
-				overflow:visible;
-
-				padding:8px 20px 8px 20px;
-
-			}
-			#viewer {
-				background-color: #ffffff;
-				z-index: -1;
-				width:100%;
-				height:auto;
-				display: block;
-			}
-			.toolbar div {
-				display:block;
-				float:left;
-
-				margin:10px;
-			}
-
-			.toolbar h1, input {
-				width:200px;
-				height:30px;
-				display: block;
-				float:left;
-
-				margin: 10px;
-			}
-
-			.active {
-				position: fixed;
-				top:-10px;
-				left:-10px;
-
-				width:40%;
-				height:auto;
-				background: rgba(0, 0, 0, .8);
-				padding:30%;
-				z-index: 20;
-			}
-
-			#unitsDiv {
-				width:250px;
-			}
-
-			div.extras {
-				display:none;
-			}
-
-			.active div.extras {
-				display:block;
-			}
-
-
-			#toolGroup {
-				width:auto;
-			}
-			.toolBtns {
-				width:40px;
-				height:40px;
-				margin:2px;
-			}
-
-
-
-			#getFile {
-				width:60%;
-				height:60%;
-				z-index: 200;
-
-				background: rgba(0, 0, 0, .9);
-				padding:20%;
-				text-align: center;
-
-				margin: 0;
-				display:block;
-				position:fixed;
-			}
-			#getFile::before {
-				color: #fff;
-				content: "Drop file on Page";
-				font: bold 200% arial, serif;
-				padding:15px;
-			}
-
-
-
-			#readout {
-				width:auto;
-				height:auto;
-				bottom:50px;
-				left:20px;
-				position:fixed;
-				display: block;
-				z-index: 10;
-
-				padding:8px;
-				background: rgba(0, 0, 0, 0);
-				color:#ffffff;
-			}
-			.dimensions div {
-				width:auto;
-				min-width: 70px;
-
-				background: rgba(250, 250, 250, .5);
-				border-radius: 10px;
-				padding: 0 10px 0 10px;
-				margin: 5px;
-			}
-			#Xdim {
-				color:#ff0000;
-			}
-			#Ydim {
-				color:#00ff00;
-			}
-			#Zdim {
-				color:#0000ff;
-			}
-			#Mdim {
-				color:#ffff00;
-			}
-			#Sarea {
-				color:#eee;
-				background:none;
-				margin: 0;
-			}
-			#selectedSarea {
-				color:#ff00ff;
-				margin: 0;
-			}
-
-			#footer {
-				background: rgba(0, 0, 0, 0);
-				color: #dddddd;
-				position: fixed;
-				bottom: 10px;
-				left:20px;
-			}
-
-
-
-		</style>
 </head>
 <body>
-<input id="getFile" class="dropzone" type="file" accept=".stl" onchange="loadSTL(this)">
 
-	<div id="topBar" class="toolbar">
-		<h1>Easy STL Viewer </h1>
-		<div id="unitsDiv">
-			<div class="extras">
-				<h2>Please Select Units of Measure</h2>
-			</div>
-			Model Units:
-			<select id="UnitsIn" onclick="setUnits()" onchange="setUnitsIn(this)">
-				<option disabled>Model</option>
-				<option value='mm'>Milimeters</option>
-				<option value='in'>Inches</option>
-			</select>
-			<br />
-			Displayed Units:
-			<select id="UnitsOut" onclick="setUnits()" onchange="setUnitsOut(this)">
-				<option disabled>Displayed</option>
-				<option value='mm'>Milimeters</option>
-				<option value='in'>Inches</option>
-			</select>
-			<div class="extras">
-			<button onclick="
-				document.getElementById('unitsDiv').className='';
-				if(controls){controls.enabled=true}
-				">Close(X)</button>
-			</div>
+<div id="landing">
+	<span id="welcome">
+		<h1> Welcome to measureSTL </h1>
+		<p>measureSTL is an online utility tool for viewing and making measurements of .stl files commonly used for 3D printing. Your file is not uploaded, it remains securely on your system. All operations are performed within your local browser.</p>
+	</span>
+	<span id="fileLoader">
+		<input id="getFile" class="dropzone" type="file" accept=".stl" onchange="loadSTL(this)">
+	</span>
+</div>
+<div id="topBar" class="toolbar">
+	<h1>measureSTL </h1>
+	<div id="unitsDiv">
+		<div class="extras">
+			<h2>Please Select Units of Measure</h2>
 		</div>
-		<div id="toolGroup" >
-			<input class="toolBtns" type="image" src="assets/BTN_meshOFF.png" onclick='toggleMaterial(this)'/>
-			<input class="toolBtns" type="image" src="assets/BTN_boxOFF.png" onclick='toggleBox(this)'/>
-			<input class="toolBtns" type="image" src="assets/BTN_controlON.png" onclick='controlToggle(this)'/>
-			<input class="toolBtns" type="image" src="assets/BTN_measureON.png" onclick='toggleMeasure(this)'/>
-			<input class="toolBtns" type="image" src="assets/BTN_selectOFF.png" onclick='toggleSelect(this)'/>
-			
+		Model Units:
+		<select id="UnitsIn" onclick="setUnits()" onchange="setUnitsIn(this)">
+			<option disabled>Model</option>
+			<option value='mm'>Milimeters</option>
+			<option value='in'>Inches</option>
+		</select>
+		<br />
+		Displayed Units:
+		<select id="UnitsOut" onclick="setUnits()" onchange="setUnitsOut(this)">
+			<option disabled>Displayed</option>
+			<option value='mm'>Milimeters</option>
+			<option value='in'>Inches</option>
+		</select>
+		<div class="extras">
+		<button onclick="
+			document.getElementById('unitsDiv').className='';
+			if(controls){controls.enabled=true}
+			">Close(X)</button>
 		</div>
+	</div>
+	<div id="toolGroup" >
+		<input class="toolBtns" type="image" src="assets/BTN_meshOFF.png" onclick='toggleMaterial(this)'/>
+		<input class="toolBtns" type="image" src="assets/BTN_boxOFF.png" onclick='toggleBox(this)'/>
+		<input class="toolBtns" type="image" src="assets/BTN_controlON.png" onclick='controlToggle(this)'/>
+		<input class="toolBtns" type="image" src="assets/BTN_measureON.png" onclick='toggleMeasure(this)'/>
+		<input class="toolBtns" type="image" src="assets/BTN_selectOFF.png" onclick='toggleSelect(this)'/>
+		
+	</div>
 
+</div>
+<div id="viewer"></div>
+<div id="readout" class="dimensions">
+	<h3>Dimensions</h3>
+	<div id="Xdim"></div>
+	<div id="Ydim"></div>
+	<div id="Zdim"></div>
+	<div id="Mdim"></div>
+	<div>
+		Surface Area:
+		<div id="Sarea"></div>
+		<div id="selectedSarea"></div>
 	</div>
-	<div id="viewer"></div>
-	<div id="readout" class="dimensions">
-		<h3>Dimensions</h3>
-		<div id="Xdim"></div>
-		<div id="Ydim"></div>
-		<div id="Zdim"></div>
-		<div id="Mdim"></div>
-		<div>
-			Surface Area:
-			<div id="Sarea"></div>
-			<div id="selectedSarea"></div>
-		</div>
-	</div>
-	<div id="footer">
-	Created by Forrest McBride using THREE.js
-	</div>
+</div>
+<div id="footer">
+Created by Forrest McBride using THREE.js
+</div>
 
 
 
@@ -229,540 +79,7 @@
 <script src="js/libs/stats.min.js"></script>
 <script src="js/renderers/CanvasRenderer.js"></script>
 <script src="js/controls/OrbitControls.js"></script>
-
-
-<script>
-	var url=window.location.href;
-	if(url.includes("#")){
-		var hash = url.substring(url.indexOf('#')+1);
-		if(hash.length>1){
-			alert("Due to security protocol your file: "+hash+" Must be opened manually. You may do this by draging and dropping it on the page or selecting the [open file] button");
-		}
-		
-	}
-
-	/* ////////////////////////////////////////////////
-
-				#   #	 ###	####	 ####
-				#   #	#   #	#   #	#
-				#   #	#####	####	 ###
-				 # #	#   #	#   #	    #
-				  #		#   #	#   #	####
-
-	/////////////////////////////////////////////////// */
-
-	//Scene Globals
-	var scene, 		//THREE.js Scene 
-		camera, 	//THREE.js Camera
-		controls, 	//THREE.js Controls
-		renderer, 	//THREE.js Renders
-		axisHelper;
-
-	//Scene Resources
-	var material = [	//THREE.js materials array
-	    	new THREE.MeshBasicMaterial( {  //material[0] Model Wireframe
-		    	color: 0xffffff, 
-		    	wireframe: true,
-		    	depthWrite:true
-		    }),
-	    	new THREE.MeshLambertMaterial( { //material[1] Model Solid
-			    color: 0x99ffff,
-			    depthWrite:true,
-			    vertexColors:THREE.FaceColors,
-		    }),
-		    new THREE.MeshBasicMaterial({	//material[2] MeasureTool
-			    color: 0xFFFF00,
-			    depthWrite: false,
-			    depthTest: false
-		  	}), 
-	  	], 
-  		light = [],
-    	model = new THREE.Mesh(		//MODEL import geometry container
-	    	new THREE.BoxGeometry( 1, 1, 1 ), 
-	    	material[1] 
-    	),
-    	envelope = new THREE.Box3().setFromObject( model ),
-    	boundry = new THREE.BoxHelper( envelope, 0xff0000 );
-
-    boundry.visible = false;
-
-
-
-
-	// Dimensions
-	var Xdim, 		//Part Envelope X
-		Ydim, 		//Part Envelope Y
-		Zdim, 		//Part Envelope Z
-		Mdim, 		//Measure Tool Length
-		Sarea,		//Total Part surface Area
-		UnitIn= 	//Units of measure for imported Part
-			document.getElementById('UnitsIn').value,
-		UnitOut=	//Units of Measure Displayed
-			document.getElementById('UnitsOut').value,
-		S; 			//Scene Scale adjustment to imported Model
-
-
-	//Measure Tool
-	var	measureTool = true,					//Toggle TEMP USE
-		pointA = new THREE.Vector3( 0, 0, 0 ),
-		pointB = new THREE.Vector3(),
-		markerA, 		//Measurement Start
-		markerB, 		//Measurement End
-		line;			//Measurement Line
-
-	//Select Faces
-	var selectedFaces=[],
-		selectedSarea,
-		selectTool=false;
-		
-
-
-	/* ////////////////////////////////////////////////////
-
-				#####	#   #	#   # 	 ###
-				#		#   #	##  # 	#   #
-				####	#   #	# # # 	#
-				#		#   #	#  ## 	#   #
-				#		 ###	#   # 	 ###
-
-	//////////////////////////////////////////////////// */
-
-
-	function loadSTL(thisInput){
-		if(document.getElementById('getFile').value){
-	        loader = new THREE.STLLoader();
-	        thisFile = thisInput.files[0];
-	        reader = new FileReader();
-	        reader.onload = function(e){
-	        	document.getElementById('getFile').style.display="none";
-	        	model['geometry'] = new THREE.Geometry().fromBufferGeometry(loader.parseBinary(reader.result));
-	        	centerPosition(model);
-	        	envelope.setFromObject(model);
-	        	boundry.update(envelope); 
-	        	GetBoundryDimensions();
-	        	calculateSurfaceArea(model['geometry']);
-	        	if(!scene){
-	        		init();
-					animate();
-				}
-				normalizeSceneScale();
-				setUnits();
-
-	        }
-	        reader.readAsArrayBuffer(thisFile);
-	        
-	    }
-	    else{alert('No File Selected!')}
-    }
-	function init() {
-	    scene = new THREE.Scene();
-
-	    //SET CAMERA
-	    camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 10000 );
-	    controls = new THREE.OrbitControls(camera);
-    	camera.position.x = 250;
-    	camera.position.y = 250;
-    	camera.position.z = 250;
-
-	    //Guides
-	    axisHelper = new THREE.AxisHelper( 200 );
-
-	   	markerA = new THREE.Mesh( 
-	   		new THREE.SphereGeometry( 2, 12, 12 ), 
-	   		material[2]
-	   	);
-		markerB = markerA.clone();
-		
-
-
-	    //SET LIGHT
-	    light[0] = new THREE.AmbientLight(0x404040);
-	    light[1] = new THREE.DirectionalLight(0xffffdd,0.8);
-	    light[1].position.set(3, 5, -2).normalize();
-	    light[2] = new THREE.DirectionalLight(0xccccff,0.3);
-	    light[2].position.set(-5, -2, 1).normalize();
-
-
-	    model.geometry.dynamic = true;
-
-	    scene.add( light[0] );
-	    scene.add( light[1] );
-	    scene.add( light[2] );
-	    scene.add(axisHelper);
-	    scene.add(  boundry );
-	    scene.add(  markerA );
-		scene.add(  markerB );
-		scene.add(  model   );
-
-	    setRenderer();
-	    renderer.setSize( window.innerWidth, window.innerHeight );
-
-	    document.getElementById('viewer').appendChild( renderer.domElement );
-	    renderer.render( scene, camera );
-	    document.addEventListener('mousedown', onDocumentMouseDown, false);
-    	window.addEventListener('resize', onWindowResize, false);
-	}
-	function animate() {
-
-	    requestAnimationFrame( animate );
-	    controls.update();
-	    renderer.render( scene, camera );
-	}
-	function centerPosition(mesh){
-		mesh.position.set(0,0,0);
-		var mass = new THREE.Box3().setFromObject( mesh );
-		var Xoffset = (mass.min.x*-1)+((mass.min.x-mass.max.x)*1/2);
-		var Yoffset = (mass.min.y*-1)+((mass.min.x-mass.max.x)*1/2);
-		var Zoffset = (mass.min.z*-1)+((mass.min.x-mass.max.x)*1/2);
-		mesh.position.set(Xoffset,Yoffset,Zoffset);
-	}
-	function webglAvailable() {
-		try {
-			var canvas = document.createElement( 'canvas' );
-			return !!( window.WebGLRenderingContext && (
-				canvas.getContext( 'webgl' ) ||
-				canvas.getContext( 'experimental-webgl' ) )
-			);
-		} catch ( e ) {
-			return false;
-		}
-	}
-	function setRenderer(){
-		if ( webglAvailable() ) {
-			renderer = new THREE.WebGLRenderer();
-		} else {
-			renderer = new THREE.CanvasRenderer();
-			alert("WARNING! \n WebGL not supported. A slower Canvas Render will be used");
-		}
-	}
-	function onWindowResize() {
-	    camera.aspect = window.innerWidth / window.innerHeight;
-	    camera.updateProjectionMatrix();
-
-	    renderer.setSize(window.innerWidth, window.innerHeight);
-	}
-	function normalizeSceneScale(){
-    	S=((Xdim+Ydim+Zdim)/3)/100;
-    	camera.position.x = 250*S;
-    	camera.position.y = 250*S;
-    	camera.position.z = 250*S;
-
-    	markerA.scale.set(S,S,S);
-    	markerB.scale.set(S,S,S);
-    	axisHelper.scale.set(S,S,S);
-    }
-
-	/* ########################
-		UNITS & DIMENSIONS
-	########################## */
-
-	function UnitsOfLength (number,unitsInCode,unitsOutCode){ //WIP
-		var standardLengthUnits = 
-			//Listed Short to Long
-			[["code", "th",     "l", "in","ft","yd","ch","fur","ml","lea"], 
-			 ["name", "thou","line", "inch","foot","yard","chain","furlong","mile","league"],
-			 //Ratio Next unit down
-			 ["rate",  NaN,  1000/12,   12,  12,   3,  22,   10,   8,   3,]
-			];
-		var metricLengthUnits = 
-			[["code", "mm","cm","dm","m","km"],
-			 ["name","milimeter","centimeter","decimeter","meter","kilometer"]];
-		for(i=0;standardLengthUnits[0].length>i;i++){
-
-		}
-
-	}
-
-	function convertUnits(number){
-		var thisNum = number;
-		if(UnitIn=='in' && UnitOut=='mm'){
-			thisNum=thisNum*25.4;
-		}
-		else if (UnitIn=='mm'&&UnitOut=='in'){
-			thisNum=thisNum*0.0393701;
-		}
-		else if (UnitIn=='mm'&&UnitOut=='cm'){
-			thisNum=thisNum*.01;
-		}
-		else if (UnitIn=='cm'&&UnitOut=='mm'){
-			thisNum=thisNum*10;
-		}
-
-		
-
-
-
-		return RoundToNearest(thisNum, 2);
-	}
-	function setUnits(){
-		thisDiv = document.getElementById("unitsDiv");
-		thisDiv.className = "active";
-		if(controls){
-			controls.enabled = false;
-		};
-	}
-	function setUnitsIn(event){
-		UnitIn=event.value;
-		GetBoundryDimensions();
-	}
-	function setUnitsOut(event){
-		UnitOut=event.value;
-		GetBoundryDimensions();
-		document.getElementById('Sarea').innerHTML = 
-		"Total: "+
-    	convertUnits(Sarea)+UnitOut+"\u00B2";
-	}
-
-    function calculateSurfaceArea( geometry ){
-    	tempGeo = geometry;
-    	Sarea = 0;
-    	var a, b, c;
-	    var v0 = new THREE.Vector3();
-		var v1 = new THREE.Vector3();
-    	for(i=0;i<tempGeo.faces.length;i++){
-    		
-			a=tempGeo.vertices[tempGeo.faces[i].a];
-        	b=tempGeo.vertices[tempGeo.faces[i].b];
-        	c=tempGeo.vertices[tempGeo.faces[i].c];
-        	v0.subVectors( c, b );
-			v1.subVectors( a, b );
-
-	        Sarea += v0.cross( v1 ).length() * 0.5;	
-    	}
-    	document.getElementById('Sarea').innerHTML = "Total: "+
-    	convertUnits(Sarea)+UnitOut+"\u00B2";
-    }
-
-    function calculateSelectedSurfaceArea( geometry ){
-    	tempGeo = geometry;
-    	selectedSarea = 0;
-    	var a, b, c;
-	    var v0 = new THREE.Vector3();
-		var v1 = new THREE.Vector3();
-
-    	for(i=0;i<tempGeo.faces.length;i++){
-    		if(tempGeo.faces[i].selected==true){
-				a=tempGeo.vertices[tempGeo.faces[i].a];
-	        	b=tempGeo.vertices[tempGeo.faces[i].b];
-	        	c=tempGeo.vertices[tempGeo.faces[i].c];
-	        	v0.subVectors( c, b );
-				v1.subVectors( a, b );
-		        selectedSarea += v0.cross( v1 ).length() * 0.5;	
-		    }
-    	}
-    	document.getElementById('selectedSarea').innerHTML = "Selected: "+
-    	convertUnits(selectedSarea)+UnitOut+"\u00B2";
-    }
-
-
-    function GetBoundryDimensions(){
-		Xdim = envelope.size()['x'];
-		Ydim = envelope.size()['y'];
-		Zdim = envelope.size()['z'];
-
-		document.getElementById('Xdim').innerHTML = 
-			"X : "+convertUnits(Xdim)+UnitOut;
-		document.getElementById('Ydim').innerHTML = 
-			"Y : "+convertUnits(Ydim)+UnitOut;
-		document.getElementById('Zdim').innerHTML = 
-			"Z : "+convertUnits(Zdim)+UnitOut;
-	}
-
-    function getLongestSide(){
-    	longest = envelope.size()['x'];
-    	if(envelope.size()['y']>longest){
-    		longest = envelope.size()['y'];
-    	}
-    	else if(envelope.size()['z']>longest){
-    		longest = envelope.size()['z'];
-    	}
-    	return longest;
-    }
-    function RoundToNearest(input, decimalPlace){
-		dp = 10^decimalPlace;
-		return Math.round(input*dp)/dp;
-	}
-
-
-   	/* ########################
-		BUTTONS / GUI TOOLS
-	########################## */
-	function toggleMaterial( event){
-		if(model['material'] == material[0]){
-			model['material'] = material[1];
-			event.src="assets/BTN_meshOFF.png"
-		}
-		else{
-			model['material'] = material[0];
-			event.src="assets/BTN_meshON.png"
-		}
-	}
-	function toggleBox(event){
-		
-		if(boundry.visible == true){
-			boundry.visible = false;
-			event.src="assets/BTN_boxOFF.png"
-		}
-		else{
-			boundry.visible = true;
-			event.src="assets/BTN_boxON.png"
-		}
-	}
-	function controlToggle( event) {
-		if(controls.enabled == true){
-			controls.enabled = false;
-			event.src="assets/BTN_controlOFF.png"
-		}
-		else{
-			controls.enabled = true;
-			event.src="assets/BTN_controlON.png"
-		}
-	}
-
-	function toggleMeasure( event ){
-
-		if(measureTool==true){
-			measureTool=false;
-			scene.remove( line );
-			markerA.visible = false;
-			markerB.visible = false;
-			event.src="assets/BTN_measureOFF.png"
-		}
-		else{
-			measureTool=true;
-			markerA.position.set();
-			markerB.position.copy(markerA);
-			markerA.visible = true;
-			markerB.visible = true;
-			event.src="assets/BTN_measureON.png"
-		}
-	}
-
-	function toggleSelect( event ){
-		if(selectTool==true){
-			selectTool=false;
-			event.src="assets/BTN_selectOFF.png"
-		}
-		else{
-			selectTool=true;
-			event.src="assets/BTN_selectON.png"
-
-			//Disable Measure
-			measureTool=false;
-			scene.remove( line );
-			markerA.visible = false;
-			markerB.visible = false;
-		}
-	}
-
-
-	//measure tool functions
-	function getIntersections( event ) {
-	  var vector = new THREE.Vector2();
-
-	  vector.set(
-	    ( event.clientX / window.innerWidth ) * 2 - 1,
-	    - ( event.clientY / window.innerHeight ) * 2 + 1 );
-
-	  var temp = [model];
-
-	  var raycaster = new THREE.Raycaster();
-	  raycaster.setFromCamera( vector, camera );	
-	  var intersects = raycaster.intersectObjects( temp );
-	  
-	  return intersects;
-	}
-	function getLine( vectorA, vectorB ) {
-
-	  var geometry = new THREE.Geometry();
-	  geometry.vertices.push( vectorA );
-	  geometry.vertices.push( vectorB );
-	  var material = new THREE.LineBasicMaterial({
-	    color: 0xFFFF00,
-	    depthWrite: false,
-	    depthTest: false
-	  });
-	  line = new THREE.Line( geometry, material );
-	  return line;
-	}
-
-	function onDocumentMouseMove( event ) 
-	{
-		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-	}
-
-	function onDocumentMouseDown( event ) {
-
-	  if(measureTool == true){
-	  		measurementTool(event);
-		}
-	  else if(selectTool==true){
-		  	selectSurfacesTool(event);
-	  	}
-	}
-	function measurementTool( event ){
-		var intersects = getIntersections( event );
-
-	  if( intersects.length > 0 ){
-
-	    if ( ! pointB.equals( pointA ) ) {
-	      pointB = intersects[ 0 ].point;
-	    } else {
-	      pointB = pointA;
-	    }
-	    pointA = intersects[ 0 ].point;
-	    markerA.position.copy( pointA );
-	    markerB.position.copy( pointB );
-	    
-	    var distance = pointA.distanceTo( pointB );
-	    
-	    if ( line instanceof THREE.Line ) {
-	      scene.remove( line );
-	    }
-	    if ( distance > 0 ) {
-	      document.getElementById('Mdim').innerHTML = 
-			"Measurement: "+convertUnits(distance)+UnitOut;
-			line = getLine( pointA, pointB );
-	      scene.add(line);
-	    }
-
-	  }
-	}
-
-	function selectSurfacesTool( event ){
-
-		/* 
-		Special thanks to Seth Moczydlowski's tutorial 
-		http://moczys.com/2014/01/09/three-js-experiment-2-selectionhighlighting/
-		*/
-
-		// var selectedFaces[]
-
-		var intersects = getIntersections( event );
-	  	if( intersects.length > 0 ){ // If Face Selected
-	  		if(intersects[0].face.selected==null ||
-	  		   intersects[0].face.selected==false){
-	  			intersects[0].face.selected=true;
-				intersects[0].face.color.setHex( 0xff00ff );	
-			}	
-			else{
-	  			intersects[0].face.selected=false;
-				intersects[0].face.color.setHex( 0xffffff );
-			}
-
-			// upsdate mouseSphere coordinates and update colors
-			calculateSelectedSurfaceArea(model['geometry']);
-			intersects[0].object.geometry.colorsNeedUpdate=true;
-		}
-
-	}
-
-
-
-
-
-</script>
+<script src="js/master.js"></script>
 
 </body>
 </html>
