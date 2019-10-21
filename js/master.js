@@ -1,12 +1,5 @@
 
-var url=window.location.href;
-if(url.includes("#")){
-	var hash = url.substring(url.indexOf('#')+1);
-	if(hash.length>1){
-		alert("Due to security protocol your file: "+hash+" Must be opened manually. You may do this by draging and dropping it on the page or selecting the [open file] button");
-	}
-	
-}
+
 
 /* ////////////////////////////////////////////////
 
@@ -113,23 +106,41 @@ function loadSTL(thisInput){
 				animate();
 			}
 			normalizeSceneScale();
-			setUnits();
-
         }
         reader.readAsArrayBuffer(thisFile);
         
     }
-    else{alert('No File Selected!')}
+    else{alert('OPPS! Error loading file!')}
+}
+function loadSampleFile(){
+	var loader = new THREE.STLLoader();
+	loader.load( 'Samples/monkey.stl', function (geo){
+		model.geometry = new THREE.Geometry().fromBufferGeometry(geo);
+		//model.geometry.attributes.position.needsUpdate = true;
+		centerPosition(model);
+    	envelope.setFromObject(model);
+    	boundry.update(envelope); 
+    	GetBoundryDimensions();
+    	calculateSurfaceArea(model['geometry']);
+    	if(!scene){
+    		init();
+			animate();
+		}
+		normalizeSceneScale();
+		document.getElementById('landing').style.display="none";
+	})
 }
 function init() {
     scene = new THREE.Scene();
 
     //SET CAMERA
     camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 10000 );
-    controls = new THREE.OrbitControls(camera);
+    controls = new THREE.TrackballControls(camera);
+    controls.rotateSpeed = 3;
+    camera.up.set( 0, 0, 1 );
 	camera.position.x = 250;
 	camera.position.y = 250;
-	camera.position.z = 250;
+	camera.position.z = 0;
 
     //Guides
     axisHelper = new THREE.AxisHelper( 200 );
@@ -175,13 +186,32 @@ function animate() {
     controls.update();
     renderer.render( scene, camera );
 }
+
 function centerPosition(mesh){
-	mesh.position.set(0,0,0);
-	var mass = new THREE.Box3().setFromObject( mesh );
-	var Xoffset = (mass.min.x*-1)+((mass.min.x-mass.max.x)*1/2);
-	var Yoffset = (mass.min.y*-1)+((mass.min.x-mass.max.x)*1/2);
-	var Zoffset = (mass.min.z*-1)+((mass.min.x-mass.max.x)*1/2);
-	mesh.position.set(Xoffset,Yoffset,Zoffset);
+	envelope.setFromObject(model);
+	function center(min,max){
+		var lowEnd = min;
+		var highEnd = max;
+		var offset='';
+		var addHalf =(lowEnd+highEnd)/2;
+		if(lowEnd<0 && 0<highEnd){
+			console.log("split");
+			offset = addHalf
+		}else if(0<lowEnd){
+			console.log("greater");
+			offset = addHalf+lowEnd
+		}else if(highEnd<0){
+			console.log("lower");
+			offset = addHalf+highEnd
+		};
+		console.log("min:"+lowEnd+" max:"+highEnd+" offset"+offset);
+		return (offset*-1)
+	}
+	var xOffset = center(envelope.min.x,envelope.max.x);
+	var yOffset = center(envelope.min.y,envelope.max.y);
+	var zOffset = center(envelope.min.z,envelope.max.z);
+	console.log(xOffset,yOffset,zOffset);
+	mesh.position.set(xOffset,yOffset,zOffset);
 }
 function webglAvailable() {
 	try {
@@ -212,7 +242,7 @@ function normalizeSceneScale(){
 	S=((Xdim+Ydim+Zdim)/3)/100;
 	camera.position.x = 250*S;
 	camera.position.y = 250*S;
-	camera.position.z = 250*S;
+	camera.position.z = 0; //250*S;
 
 	markerA.scale.set(S,S,S);
 	markerB.scale.set(S,S,S);
@@ -261,12 +291,17 @@ function convertUnits(number){
 
 	return RoundToNearest(thisNum, 2);
 }
-function setUnits(){
-	thisDiv = document.getElementById("unitsDiv");
-	thisDiv.className = "active";
-	if(controls){
+function setUnits(event){
+	if(controls.enabled == true){
 		controls.enabled = false;
+		event.click();
 	};
+	thisDiv = document.getElementById("unitsDiv");
+	event.onblur = function(){
+		controls.enabled = true;
+	};
+
+	//thisDiv.className = "active";
 }
 function setUnitsIn(event){
 	UnitIn=event.value;
